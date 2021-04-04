@@ -24,6 +24,18 @@ jobs:
       run: sudo make uninstall
     - name: Reinstalling without symlinks
       run: sudo make install
+  build-oldlibs:
+    name: linux-acr-resymlink
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Installing with symlinks
+      run: |
+        for rlib in libr_anal.a libr_asm.a libr_cons.a libr_crypto.a libr_flag.a libr_hash.a libr_lang.a libr_parse.a libr_reg.a libr_search.a libr_syscall.a libr_util.a; do touch /tmp/$rlib; chmod 000 /tmp/$rlib; done
+        for rlib in libr_anal.so libr_asm.so libr_cons.so libr_crypto.so libr_flag.so libr_hash.so libr_lang.so libr_parse.so libr_reg.so libr_search.so libr_syscall.so libr_util.so; do touch /tmp/$rlib; chmod 000 /tmp/$rlib; done
+        export LDFLAGS=-L/tmp
+        sys/install.sh
   build-spaces:
     name: linux-meson-spaces
     continue-on-error: true
