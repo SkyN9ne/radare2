@@ -34,7 +34,7 @@ jobs:
       run: |
         mkdir -p /tmp/fakelibs /tmp/fakeincs
         for a in anal asm cons crypto flag hash lang parse reg search syscall util ; do touch /tmp/fakelibs/libr_$a.a ; touch /tmp/fakelibs/libr_$a.so ; done
-	touch /tmp/fakeincs/r_util.h
+        touch /tmp/fakeincs/r_util.h
         chmod 000 /tmp/fakelibs/*
         export CFLAGS=-I/tmp/fakeincs/
         export LDFLAGS=-L/tmp/fakelibs/
