@@ -25,16 +25,19 @@ jobs:
     - name: Reinstalling without symlinks
       run: sudo make install
   build-oldlibs:
-    name: linux-acr-resymlink
+    name: linux-acr-oldlibsbug
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Installing with symlinks
+    - name: Setting up bad libnames
       run: |
-        for rlib in libr_anal.a libr_asm.a libr_cons.a libr_crypto.a libr_flag.a libr_hash.a libr_lang.a libr_parse.a libr_reg.a libr_search.a libr_syscall.a libr_util.a; do touch /tmp/$rlib; chmod 000 /tmp/$rlib; done
-        for rlib in libr_anal.so libr_asm.so libr_cons.so libr_crypto.so libr_flag.so libr_hash.so libr_lang.so libr_parse.so libr_reg.so libr_search.so libr_syscall.so libr_util.so; do touch /tmp/$rlib; chmod 000 /tmp/$rlib; done
-        export LDFLAGS=-L/tmp
+        mkdir -p /tmp/fakelibs /tmp/fakeincs
+        for a in anal asm cons crypto flag hash lang parse reg search syscall util ; do touch /tmp/fakelibs/libr_$a.a ; touch /tmp/fakelibs/libr_$a.so ; done
+	touch /tmp/fakeincs/r_util.h
+        chmod 000 /tmp/fakelibs/*
+        export CFLAGS=-I/tmp/fakeincs/
+        export LDFLAGS=-L/tmp/fakelibs/
         sys/install.sh
   build-spaces:
     name: linux-meson-spaces
